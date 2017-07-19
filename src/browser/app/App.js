@@ -15,7 +15,8 @@ import { Miss } from 'react-router';
 import { ThemeProvider } from 'react-fela';
 import { compose } from 'ramda';
 import { connect } from 'react-redux';
-
+import gql from 'graphql-tag';
+import { graphql } from 'react-apollo';
 // Pages
 import FieldsPage from '../fields/FieldsPage';
 import HomePage from '../home/HomePage';
@@ -33,11 +34,7 @@ type AppProps = {
   theme: Theme,
 };
 
-const App = ({
-  currentLocale,
-  theme,
-  themeName,
-}: AppProps) => (
+const App = ({ currentLocale, theme, themeName }: AppProps) =>
   <ThemeProvider
     key={themeName} // Enforce rerender.
     theme={theme}
@@ -53,9 +50,7 @@ const App = ({
             { 'http-equiv': 'x-ua-compatible', content: 'ie=edge' },
             ...favicon.meta,
           ]}
-          link={[
-            ...favicon.link,
-          ]}
+          link={[...favicon.link]}
         />
         <Header />
         <Box
@@ -74,16 +69,25 @@ const App = ({
         <Footer />
       </Container>
     </Baseline>
-  </ThemeProvider>
-);
+  </ThemeProvider>;
+
+const usersQuery = gql`
+  query {
+    products {
+      products {
+        id
+      }
+    }
+  }
+`;
+
+const ContainerWithData = graphql(usersQuery)(App);
 
 export default compose(
-  connect(
-    (state: State) => ({
-      currentLocale: state.intl.currentLocale,
-      theme: themes[state.app.currentTheme] || themes.defaultTheme,
-      themeName: state.app.currentTheme,
-    }),
-  ),
+  connect((state: State) => ({
+    currentLocale: state.intl.currentLocale,
+    theme: themes[state.app.currentTheme] || themes.defaultTheme,
+    themeName: state.app.currentTheme,
+  })),
   start,
-)(App);
+)(ContainerWithData);

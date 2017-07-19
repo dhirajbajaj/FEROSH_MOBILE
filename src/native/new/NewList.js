@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
 });
 
 const NewList = ({ todos, toggleTodoCompleted, data }: TodosProps) => {
-  console.log(data.users);
+  console.log('data ==============');
+  console.log(data);
   if (isEmpty(todos)) {
     return <IsEmpty />;
   }
@@ -89,16 +90,17 @@ const NewList = ({ todos, toggleTodoCompleted, data }: TodosProps) => {
   );
 };
 
-const ProductQuery = gql`
+const usersQuery = gql`
   query {
-    channels {
-      id
-      name
+    products {
+      products {
+        id
+      }
     }
   }
 `;
 
-const ContainerWithData = graphql(ProductQuery)(NewList);
+const ContainerWithData = graphql(usersQuery)(NewList);
 
 export default connect(
   (state: State) => ({

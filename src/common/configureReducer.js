@@ -58,6 +58,7 @@ const configureReducer = (initialState: Object) => {
       intl,
       todos,
       users,
+      apollo,
     });
   }
 

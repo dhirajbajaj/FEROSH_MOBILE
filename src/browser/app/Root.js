@@ -4,7 +4,8 @@ import Fela from '../../common/components/FelaProvider';
 import React from 'react';
 import configureFela from '../configureFela';
 import { BrowserRouter } from 'react-router';
-import { Provider as Redux } from 'react-redux';
+import { ApolloProvider } from 'react-apollo';
+import client from '../../common/apolloClient';
 
 type RootProps = {
   store: Object,
@@ -34,11 +35,7 @@ const getFelaMountNode = () => {
 // from regular div is much easier.
 // developer.mozilla.org/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_button_role
 // developer.mozilla.org/docs/Web/Accessibility/Keyboard-navigable_JavaScript_widgets
-const DivButton = (props: {
-  disabled?: boolean,
-  onClick?: Function,
-  style?: Object,
-}) => (
+const DivButton = (props: { disabled?: boolean, onClick?: Function, style?: Object }) =>
   <div // eslint-disable-line jsx-a11y/no-static-element-interactions
     {...props}
     role="button"
@@ -56,37 +53,30 @@ const DivButton = (props: {
       userSelect: 'none',
     }}
     tabIndex={props.disabled ? -1 : 0}
-  />
-);
+  />;
 
 // This is reused in src/server/frontend/render.js
-export const BrowserRoot = ({
-  store,
-  felaRenderer,
-  children,
-}: BrowserRootProps) => (
-  <Redux store={store}>
+export const BrowserRoot = ({ store, felaRenderer, children }: BrowserRootProps) =>
+  <ApolloProvider store={store} client={client}>
     <Fela
-      Button={(props) => <DivButton {...props} />}
-      Image={(props) => <img {...props} />} // eslint-disable-line jsx-a11y/img-has-alt
-      Text={(props) => <span {...props} />}
-      TextInput={(props) => <input {...props} />}
-      View={(props) => <div {...props} />}
+      Button={props => <DivButton {...props} />}
+      Image={props => <img {...props} />} // eslint-disable-line jsx-a11y/img-has-alt
+      Text={props => <span {...props} />}
+      TextInput={props => <input {...props} />}
+      View={props => <div {...props} />}
       mountNode={process.env.IS_BROWSER && getFelaMountNode()}
       renderer={felaRenderer}
     >
       {children}
     </Fela>
-  </Redux>
-);
+  </ApolloProvider>;
 
 // We needs such Root also for vanilla hot reloading.
-const Root = ({ store }: RootProps) => (
+const Root = ({ store }: RootProps) =>
   <BrowserRoot felaRenderer={configureFela()} store={store}>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </BrowserRoot>
-);
+  </BrowserRoot>;
 
 export default Root;

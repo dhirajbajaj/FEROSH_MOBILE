@@ -12,12 +12,10 @@ class NewListWithData extends React.Component {
 
   render() {
     const { filter, loading, products, fetchMore } = this.props;
-    console.log('data ========');
-    console.log(this.props);
     if (loading) {
       return <Loading />;
     }
-    return <NewList entries={products || []} onLoadMore={fetchMore} />;
+    return <NewList products={products || []} onLoadMore={fetchMore} />;
   }
 }
 
@@ -46,6 +44,7 @@ const PRODUCTS_QUERY = gql`
     }
   }
 `;
+
 const ITEMS_PER_PAGE = 10;
 const withData = graphql(PRODUCTS_QUERY, {
   options: props => ({
@@ -56,7 +55,7 @@ const withData = graphql(PRODUCTS_QUERY, {
     },
     fetchPolicy: 'cache-and-network',
   }),
-  props: ({ data: { loading, products, fetchMore } }) => ({
+  props: ({ data: { loading, products: { products } = [], fetchMore } }) => ({
     loading,
     products,
     fetchMore: () =>

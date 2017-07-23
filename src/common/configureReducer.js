@@ -34,8 +34,8 @@ const apollo = client.reducer();
 const configureReducer = (initialState: Object) => {
   let reducer;
   if (isReactNative) {
-    // const { tabBarReducer } = require('../native/app/router');
-    // const tabBar = tabBarReducer;
+    const { tabBarReducer } = require('../native/app/router');
+    const tabBar = tabBarReducer;
     reducer = combineReducers({
       app,
       auth,
@@ -45,7 +45,7 @@ const configureReducer = (initialState: Object) => {
       intl,
       todos,
       users,
-      // tabBar,
+      tabBar,
       apollo,
     });
   } else {

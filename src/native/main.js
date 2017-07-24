@@ -20,19 +20,19 @@ const createNativeInitialState = () => ({
   device: {
     ...initialState.device,
     isReactNative: true,
-    platform: Platform.OS
+    platform: Platform.OS,
   },
   intl: {
     ...initialState.intl,
-    currentLocale: getDefaultDeviceLocale()
-  }
+    currentLocale: getDefaultDeviceLocale(),
+  },
 });
 
 const store = configureStore({
   initialState: createNativeInitialState(),
-  platformDeps: { FBSDK, uuid, storageEngine: AsyncStorage }
+  platformDeps: { FBSDK, uuid, storageEngine: AsyncStorage },
 });
 
 const Este = () => <Root store={store} />;
 
-AppRegistry.registerComponent('Este', () => Este);
+AppRegistry.registerComponent('este', () => Este);

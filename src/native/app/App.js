@@ -4,7 +4,7 @@ import type { Theme } from '../../common/themes/types';
 import * as themes from '../themes';
 
 import React from 'react';
-import EnhanceRouter from './EnhanceRouter';
+import { TabBar } from './router';
 import start from '../../common/app/start';
 import { Baseline } from '../components';
 import { Box } from '../../common/components';
@@ -38,7 +38,7 @@ const App = ({ appMenuShown, appShowMenu, appStarted, theme, themeName }: AppPro
               appMenuShown // Because iOS StatusBar is an overlay.
             }
           />}
-        <EnhanceRouter />
+        <TabBar />
 
         <Baseline lineHeight={theme.typography.lineHeight} />
       </Box>

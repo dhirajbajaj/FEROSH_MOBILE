@@ -10,11 +10,11 @@ const EnhanceRouter = ({ dispatch, nav }) =>
 
 EnhanceRouter.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  nav: PropTypes.object.isRequired
+  nav: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
-  nav: state.tabBar
+  nav: state.tabBar,
 });
 
 export default connect(mapStateToProps)(EnhanceRouter);

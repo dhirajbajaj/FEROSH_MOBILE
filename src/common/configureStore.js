@@ -9,7 +9,7 @@ import { composeWithDevTools } from 'remote-redux-devtools';
 type Options = {
   initialState: Object,
   platformDeps?: Object,
-  platformMiddleware?: Array<Function>
+  platformMiddleware?: Array<Function>,
 };
 
 const configureStore = (options: Options) => {
@@ -22,7 +22,7 @@ const configureStore = (options: Options) => {
   const store = createStore(
     reducer,
     initialState,
-    composeWithDevTools(applyMiddleware(...middleware), autoRehydrate())
+    composeWithDevTools(applyMiddleware(...middleware), autoRehydrate()),
   );
 
   if (platformDeps.storageEngine) {

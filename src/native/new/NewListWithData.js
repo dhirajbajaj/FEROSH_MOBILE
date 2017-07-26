@@ -34,6 +34,7 @@ const fetchMore = data =>
     variables: {
       offset: data.products.products.length,
     },
+
     updateQuery: (prev, { fetchMoreResult }) => {
       if (!fetchMoreResult || fetchMoreResult.products.products.length === 0) {
         return prev;

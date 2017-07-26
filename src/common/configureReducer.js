@@ -9,8 +9,8 @@ import todos from './todos/reducer';
 import users from './users/reducer';
 import { combineReducers } from 'redux';
 import { fieldsReducer as fields } from './lib/redux-fields';
-import isReactNative from './app/isReactNative';
 import client from './apolloClient';
+import newFilter from './new/reducer';
 
 // stackoverflow.com/q/35622588/233902
 const resetStateOnSignOutReducer = (reducer, initialState) => (state: State, action: Action) => {
@@ -31,41 +31,22 @@ const resetStateOnSignOutReducer = (reducer, initialState) => (state: State, act
   );
 };
 const apollo = client.reducer();
-const configureReducer = (initialState: Object) => {
-  let reducer;
-  if (isReactNative) {
-    const { tabBarReducer } = require('../native/app/router');
-    const tabBar = tabBarReducer;
-    reducer = combineReducers({
-      app,
-      auth,
-      config,
-      device,
-      fields,
-      intl,
-      todos,
-      users,
-      tabBar,
-      apollo,
-    });
-  } else {
-    reducer = combineReducers({
-      app,
-      auth,
-      config,
-      device,
-      fields,
-      intl,
-      todos,
-      users,
-      apollo,
-    });
-  }
-
+const configureReducer = (initialState: Object) =>
   // The power of higher-order reducers, http://slides.com/omnidan/hor
-  reducer = resetStateOnSignOutReducer(reducer, initialState);
-
-  return reducer;
-};
+  resetStateOnSignOutReducer(
+    combineReducers({
+      app,
+      auth,
+      config,
+      device,
+      fields,
+      intl,
+      todos,
+      users,
+      apollo,
+      newFilter,
+    }),
+    initialState,
+  );
 
 export default configureReducer;

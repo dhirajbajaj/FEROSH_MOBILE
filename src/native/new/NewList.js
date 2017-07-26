@@ -1,33 +1,49 @@
 // @flow
-import Checkbox from './Checkbox';
 import React from 'react';
-import productsMessages from '../../common/newList/productsMessages';
-import { Box, TextInput } from '../../common/components';
+import productsMessages from '../../common/new/productsMessages';
+import { Box, Text, Image } from '../../common/components';
 import { FormattedMessage } from 'react-intl';
-import { Image, StyleSheet, FlatList, Text, Dimensions, ActivityIndicator } from 'react-native';
+import { FlatList, Dimensions, ActivityIndicator } from 'react-native';
 import { isEmpty } from 'ramda';
+import { SearchBar } from 'react-native-elements';
+import CategoriesWithData from './FilterHeader';
 
 const screenSize = Dimensions.get('window');
-const ProductItem = ({ product, toggleProductCompleted }) =>
-  <Box
-    backgroundColor="primary"
-    marginTop={0.5}
-    // marginHorizontal={0.5}
-    height={5}
-    style={() => ({
-      width: screenSize.width / 2,
-    })}
-  >
-    <Checkbox
-      alignItems="center"
-      checked={product.completed}
-      height={2}
-      marginVertical={0}
-      onPress={() => toggleProductCompleted(product)}
-      width={2}
-    />
-    <TextInput editable={false} flex={1} height={2} marginHorizontal={0.5} value={product.title} />
-  </Box>;
+const ProductItem = ({ product }) => {
+  console.log('product ===');
+  console.log(product);
+  return (
+    <Box
+      // backgroundColor="primary"
+      flexDirection="column"
+      marginTop={0.5}
+      // marginHorizontal={0.5}
+      height={15}
+      style={() => ({
+        width: screenSize.width / 2,
+      })}
+    >
+      <Image
+        height={10}
+        backgroundColor="warning"
+        source={{
+          uri:
+            'https://ferosh.vn/uploads/19-07-2017/50x75/a-g-dam-phoi-lop-xe-truoc-khoa-sau-do-02.jpg',
+        }}
+        size={{ height: 1 }}
+      />
+      <Text height={2} marginHorizontal={0.5}>
+        {product.brand.name}
+      </Text>
+      <Text height={2} marginHorizontal={0.5}>
+        {product.name}
+      </Text>
+      <Text height={2} marginHorizontal={0.5}>
+        {product.price}
+      </Text>
+    </Box>
+  );
+};
 
 const IsEmpty = () =>
   <Box alignItems="center" justifyContent="center" flex={1}>
@@ -44,13 +60,6 @@ type NewListProps = {
   data: Object,
   onLoadMore: Function,
 };
-
-const styles = StyleSheet.create({
-  list: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-});
 
 const NewList = ({ data, onLoadMore }: NewListProps) => {
   if (data.networkStatus === 1) {
@@ -82,7 +91,12 @@ const NewList = ({ data, onLoadMore }: NewListProps) => {
       onRefresh={() => data.refetch()}
       onEndReachedThreshold={0.5}
       onEndReached={onLoadMore}
-      renderItem={product => <ProductItem product={product} key={product.id} />}
+      renderItem={product => <ProductItem product={product.item} />}
+      keyExtractor={product => product.id}
+      horizontal={false}
+      numColumns={2}
+      ListHeaderComponent={<CategoriesWithData />}
+      // columnWrapperStyle={{ marginHorizontal:10 }}
     />
   );
 };

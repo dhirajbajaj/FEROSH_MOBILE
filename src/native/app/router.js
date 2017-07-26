@@ -12,7 +12,7 @@ import SignInPage from '../auth/SignInPage';
 import Setting from '../setting/Setting';
 import Shop from '../shop/Shop';
 import Designers from '../designers/Designers';
-import New from '../new/New';
+import NavigatorTabNew from '../new/navigationConfiguration';
 
 const routeConfiguration = {
   Home: {
@@ -23,7 +23,7 @@ const routeConfiguration = {
     },
   },
   New: {
-    screen: New,
+    screen: NavigatorTabNew,
     navigationOptions: {
       tabBarLabel: "What's new",
       tabBarIcon: ({ tintColor }) => <Octicons name="gift" size={32} color={tintColor} />,
@@ -65,10 +65,3 @@ const tabBarConfiguration = {
 };
 
 export const TabBar = TabNavigator(routeConfiguration, tabBarConfiguration);
-
-export const tabBarReducer = (state, action) => {
-  if (action.type === 'JUMP_TO_TAB') {
-    return { ...state, index: 0 };
-  }
-  return TabBar.router.getStateForAction(action, state);
-};

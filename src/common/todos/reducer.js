@@ -6,17 +6,13 @@ const initialState = {
   all: {},
 };
 
-const reducer = (
-  state: TodosState = initialState,
-  action: Action,
-): TodosState => {
+const reducer = (state: TodosState = initialState, action: Action): TodosState => {
   switch (action.type) {
-
     case 'ADD_HUNDRED_TODOS': {
-      return action.payload.todos
-        .reduce((state, todo) =>
-          assocPath(['all', todo.id], todo, state)
-        , state);
+      return action.payload.todos.reduce(
+        (state, todo) => assocPath(['all', todo.id], todo, state),
+        state,
+      );
     }
 
     case 'ADD_TODO': {
@@ -43,7 +39,6 @@ const reducer = (
 
     default:
       return state;
-
   }
 };
 

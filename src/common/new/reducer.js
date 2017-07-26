@@ -1,15 +1,17 @@
 // @flow
 import { assocPath, dissocPath, filter } from 'ramda';
 
-const newFilter = (state = {}, action) => {
+const reducer = (state = { catergories: [] }, action) => {
+  console.log('action ===');
+  console.log(action);
   switch (action.type) {
     case 'SET_CATERGORY_FILTER':
-      const { catergory } = action.payload;
+      const catergory = action.payload;
       return {
         ...state,
         catergories:
           state.catergories.indexOf(catergory) === -1
-            ? state.catergories.push(catergory)
+            ? [...state.catergories, catergory]
             : state.catergories,
       };
     default:
@@ -17,4 +19,4 @@ const newFilter = (state = {}, action) => {
   }
 };
 
-export default newFilter;
+export default reducer;

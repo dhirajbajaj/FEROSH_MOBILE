@@ -7,7 +7,9 @@ import { connect } from 'react-redux';
 import { values } from 'ramda';
 import { Box, Button, Loading } from '../../common/components';
 import { graphql } from 'react-apollo';
+import { Checkbox } from './Checkbox';
 import gql from 'graphql-tag';
+import { setCategoryFilter } from '../../common/new/actions';
 
 type CategoriesProps = {
   categories: Array<Object>,
@@ -32,16 +34,19 @@ const withData = graphql(CATEGORIES_QUERY, {
   }),
 });
 
-const Categories = ({ categories, loading }: CategoriesProps) => {
-  console.log('categories ===');
-  console.log(categories);
+const Categories = ({ categories, loading, setCategoryFilter }: CategoriesProps) => {
   if (loading) {
     return <Loading />;
   }
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
       {categories.map(category =>
-        <Button marginHorizontal={0.5} key={category.id}>
+        <Button
+          marginHorizontal={0.5}
+          key={category.id}
+          onPress={() => setCategoryFilter(category.id)}
+          activeOpacity={0.5}
+        >
           {category.name}
         </Button>,
       )}
@@ -51,6 +56,9 @@ const Categories = ({ categories, loading }: CategoriesProps) => {
 
 const CategoriesWithData = withData(Categories);
 
-export default connect((state: State) => ({
-  // categories: state.categories.all,
-}))(CategoriesWithData);
+export default connect(
+  (state: State) => ({
+    newFilter: state.newFilter,
+  }),
+  { setCategoryFilter },
+)(CategoriesWithData);

@@ -39,8 +39,8 @@ const fetchMore = data =>
       if (!fetchMoreResult || fetchMoreResult.products.products.length === 0) {
         return prev;
       }
-      console.log('prev ====');
-      console.log(prev);
+      // console.log('prev ====');
+      // console.log(prev);
       return Object.assign({}, prev, {
         products: {
           ...prev.products,

@@ -9,41 +9,35 @@ import { SearchBar } from 'react-native-elements';
 import CategoriesWithData from './FilterHeader';
 
 const screenSize = Dimensions.get('window');
-const ProductItem = ({ product }) => {
-  console.log('product ===');
-  console.log(product);
-  return (
-    <Box
-      // backgroundColor="primary"
-      flexDirection="column"
-      marginTop={0.5}
-      // marginHorizontal={0.5}
-      height={15}
-      style={() => ({
-        width: screenSize.width / 2,
-      })}
-    >
-      <Image
-        height={10}
-        backgroundColor="warning"
-        source={{
-          uri:
-            'https://ferosh.vn/uploads/19-07-2017/50x75/a-g-dam-phoi-lop-xe-truoc-khoa-sau-do-02.jpg',
-        }}
-        size={{ height: 1 }}
-      />
-      <Text height={2} marginHorizontal={0.5}>
-        {product.brand.name}
-      </Text>
-      <Text height={2} marginHorizontal={0.5}>
-        {product.name}
-      </Text>
-      <Text height={2} marginHorizontal={0.5}>
-        {product.price}
-      </Text>
-    </Box>
-  );
-};
+const ProductItem = ({ product }) =>
+  <Box
+    // backgroundColor="primary"
+    flexDirection="column"
+    marginTop={0.5}
+    // marginHorizontal={0.5}
+    height={15}
+    style={() => ({
+      width: screenSize.width / 2,
+    })}
+  >
+    <Image
+      height={10}
+      backgroundColor="warning"
+      source={{
+        uri: product.media && product.media[0] ? product.media[0].link : '',
+      }}
+      size={{ height: 1 }}
+    />
+    <Text height={2} marginHorizontal={0.5}>
+      {product.brand.name}
+    </Text>
+    <Text height={2} marginHorizontal={0.5}>
+      {product.name}
+    </Text>
+    <Text height={2} marginHorizontal={0.5}>
+      {product.price}
+    </Text>
+  </Box>;
 
 const IsEmpty = () =>
   <Box alignItems="center" justifyContent="center" flex={1}>

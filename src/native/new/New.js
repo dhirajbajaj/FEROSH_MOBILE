@@ -6,7 +6,7 @@ import { Box } from '../../common/components';
 
 const New = () =>
   <Box flex={1}>
-    <Footer />
+    {/* <Footer /> */}
     <ContainerWithData />
   </Box>;
 

@@ -2,22 +2,6 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import NewList from './NewList';
-import Loading from '../../common/components/Loading';
-
-class NewListWithData extends React.Component {
-  constructor() {
-    super();
-    this.offset = 0;
-  }
-
-  render() {
-    const { filter, loading, products, fetchMore } = this.props;
-    if (loading) {
-      return <Loading />;
-    }
-    return <NewList products={products || []} onLoadMore={fetchMore} />;
-  }
-}
 
 const PRODUCTS_QUERY = gql`
   query NEW_LIST_QUERY($offset: Int, $limit: Int) {
@@ -45,34 +29,38 @@ const PRODUCTS_QUERY = gql`
   }
 `;
 
+const fetchMore = data =>
+  data.fetchMore({
+    variables: {
+      offset: data.products.products.length,
+    },
+    updateQuery: (prev, { fetchMoreResult }) => {
+      if (!fetchMoreResult || fetchMoreResult.products.products.length === 0) {
+        return prev;
+      }
+      console.log('prev ====');
+      console.log(prev);
+      return Object.assign({}, prev, {
+        products: {
+          ...prev.products,
+          products: [...prev.products.products, ...fetchMoreResult.products.products],
+        },
+      });
+    },
+  });
+
+const NewListWithData = ({ data }) => <NewList data={data} onLoadMore={() => fetchMore(data)} />;
+
 const ITEMS_PER_PAGE = 10;
 const withData = graphql(PRODUCTS_QUERY, {
-  options: props => ({
+  options: {
     variables: {
       // filter: (props.params && props.params.filter && props.params.filter.toUpperCase()) || null,
       offset: 0,
       limit: ITEMS_PER_PAGE,
     },
-    fetchPolicy: 'cache-and-network',
-  }),
-  props: ({ data: { loading, products: { products } = [], fetchMore } }) => ({
-    loading,
-    products,
-    fetchMore: () =>
-      fetchMore({
-        variables: {
-          offset: products.length,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) {
-            return prev;
-          }
-          return Object.assign({}, prev, {
-            products: [...prev.products, ...fetchMoreResult.products],
-          });
-        },
-      }),
-  }),
+    notifyOnNetworkStatusChange: true,
+  },
 });
 
 export default withData(NewListWithData);

@@ -4,7 +4,7 @@ import React from 'react';
 import productsMessages from '../../common/newList/productsMessages';
 import { Box, TextInput } from '../../common/components';
 import { FormattedMessage } from 'react-intl';
-import { Image, StyleSheet, ListView, Text, Dimensions } from 'react-native';
+import { Image, StyleSheet, FlatList, Text, Dimensions, ActivityIndicator } from 'react-native';
 import { isEmpty } from 'ramda';
 
 const screenSize = Dimensions.get('window');
@@ -41,7 +41,7 @@ const IsEmpty = () =>
   </Box>;
 
 type NewListProps = {
-  products: Array<Object>,
+  data: Object,
   onLoadMore: Function,
 };
 
@@ -52,8 +52,20 @@ const styles = StyleSheet.create({
   },
 });
 
-const NewList = ({ products, onLoadMore }: NewListProps) => {
-  if (isEmpty(products)) {
+const NewList = ({ data, onLoadMore }: NewListProps) => {
+  if (data.networkStatus === 1) {
+    return <ActivityIndicator />;
+  }
+
+  if (data.error) {
+    return (
+      <Text>
+        Error: {data.error.message}
+      </Text>
+    );
+  }
+
+  if (!data.products || isEmpty(data.products.products)) {
     return <IsEmpty />;
   }
 
@@ -63,15 +75,14 @@ const NewList = ({ products, onLoadMore }: NewListProps) => {
   //   values, // object values to array
   // )(products);
 
-  const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-
-  const dataSource = ds.cloneWithRows(products);
-
   return (
-    <ListView
-      contentContainerStyle={styles.list}
-      dataSource={dataSource}
-      renderRow={product => <ProductItem product={product} key={product.id} />}
+    <FlatList
+      data={data.products.products}
+      refreshing={data.networkStatus === 4}
+      onRefresh={() => data.refetch()}
+      onEndReachedThreshold={0.5}
+      onEndReached={onLoadMore}
+      renderItem={product => <ProductItem product={product} key={product.id} />}
     />
   );
 };

@@ -209,6 +209,10 @@ export default [
     "defaultMessage": "{leftTodos, plural, =0 {Nothing, enjoy :-)} one {You have {leftTodos} task} other {You have {leftTodos} tasks}}",
   },
   {
+    "id": "todos.leftTodos",
+    "defaultMessage": "{leftTodos, plural, =0 {Nothing, enjoy :-)} one {You have {leftTodos} task} other {You have {leftTodos} tasks}}",
+  },
+  {
     "id": "todos.newTodo.placeholder",
     "defaultMessage": "What needs to be done?",
   },

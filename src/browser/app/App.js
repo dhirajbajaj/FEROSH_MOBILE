@@ -71,18 +71,6 @@ const App = ({ currentLocale, theme, themeName }: AppProps) =>
     </Baseline>
   </ThemeProvider>;
 
-const usersQuery = gql`
-  query {
-    products {
-      products {
-        id
-      }
-    }
-  }
-`;
-
-const ContainerWithData = graphql(usersQuery)(App);
-
 export default compose(
   connect((state: State) => ({
     currentLocale: state.intl.currentLocale,
@@ -90,4 +78,4 @@ export default compose(
     themeName: state.app.currentTheme,
   })),
   start,
-)(ContainerWithData);
+)(App);

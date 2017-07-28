@@ -97,7 +97,7 @@ export type State = {
 // Actions
 
 export type Action =
-    { type: 'APP_ERROR', payload: { error: Error } }
+  | { type: 'APP_ERROR', payload: { error: Error } }
   | { type: 'ADD_HUNDRED_TODOS', payload: { todos: Array<Todo> } }
   | { type: 'ADD_TODO', payload: { todo: Todo } }
   | { type: 'APP_ONLINE', payload: { online: boolean } }
@@ -122,5 +122,4 @@ export type Action =
   | { type: 'SIGN_UP_DONE', payload: { user: ?User } }
   | { type: 'SIGN_UP_FAIL', payload: { error: Error } }
   | { type: 'TOGGLE_TODO_COMPLETED', payload: { todo: Todo } }
-  | { type: 'TOGGLE_BASELINE' }
-  ;
+  | { type: 'TOGGLE_BASELINE' };

@@ -1,42 +1,24 @@
 // @flow
 import type { ButtonProps } from '../../common/components/Button';
-import React, { Component } from 'react';
-import { TouchableWithoutFeedback } from 'react-native';
+import React from 'react';
 import { Text } from '../../common/components';
+import { TouchableWithoutFeedback } from 'react-native';
+
+type CheckboxProps = ButtonProps & {
+  checked?: boolean,
+  title: string,
+};
 
 const colors = {
-  checked: 'primary',
+  checked: 'black',
   unchecked: 'gray',
 };
 
-class TextSelectButton extends Component {
-  /*
-    Like TouchableOpacity. Pass in a child function that returns a component. Function is invoked
-    with a bool that determines whether the Touchable is active or not.
-    */
-  constructor() {
-    super();
-    this.state = { active: false };
-  }
+const Checkbox = ({ checked, onPress, title, ...props }: CheckboxProps) =>
+  <TouchableWithoutFeedback onPress={onPress}>
+    <Text color={checked ? colors.checked : colors.unchecked} {...props}>
+      {title}
+    </Text>
+  </TouchableWithoutFeedback>;
 
-  render() {
-    console.log(this.props);
-    const { active } = this.state;
-    const { title, onPress, ...props } = this.props;
-    return (
-      <TouchableWithoutFeedback
-        onPress={() => {
-          console.log('touched');
-          this.setState(prevState => ({ active: !prevState.active }));
-          onPress();
-        }}
-      >
-        <Text {...props} color={active ? colors.checked : colors.unchecked} alignSelf="center">
-          {title}
-        </Text>
-      </TouchableWithoutFeedback>
-    );
-  }
-}
-
-export default TextSelectButton;
+export default Checkbox;

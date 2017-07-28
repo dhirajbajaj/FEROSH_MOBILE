@@ -37,8 +37,8 @@ const theme: Theme = {
     },
   },
   text: {
-    bold: 600,
-    fontFamily: 'System',
+    bold: 'bold',
+    fontFamily: 'Arial',
   },
   block: {
     marginBottom: 1,
@@ -48,7 +48,7 @@ const theme: Theme = {
     borderRadius: 2,
   },
   heading: {
-    fontFamily: 'System',
+    fontFamily: 'Arial',
     marginBottom: 1,
   },
   paragraph: {

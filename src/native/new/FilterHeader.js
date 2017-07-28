@@ -34,7 +34,7 @@ const withData = graphql(CATEGORIES_QUERY, {
   }),
 });
 
-const Categories = ({ categories, loading, setCategoryFilter }: CategoriesProps) => {
+const Categories = ({ categories, loading, setCategoryFilter, newFilter }: CategoriesProps) => {
   if (loading) {
     return <Loading />;
   }
@@ -44,9 +44,11 @@ const Categories = ({ categories, loading, setCategoryFilter }: CategoriesProps)
         {categories.map(category =>
           <Checkbox
             marginHorizontal={0.5}
+            marginVertical={0.5}
             key={category.id}
             onPress={() => setCategoryFilter(category.id)}
             title={category.name.toUpperCase()}
+            checked={!!(newFilter.categories && newFilter.categories.indexOf(category.id) !== -1)}
           />,
         )}
       </ScrollView>
@@ -56,4 +58,9 @@ const Categories = ({ categories, loading, setCategoryFilter }: CategoriesProps)
 
 const CategoriesWithData = withData(Categories);
 
-export default connect(null, { setCategoryFilter })(CategoriesWithData);
+export default connect(
+  state => ({
+    newFilter: state.newFilter,
+  }),
+  { setCategoryFilter },
+)(CategoriesWithData);

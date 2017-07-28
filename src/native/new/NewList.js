@@ -27,8 +27,8 @@ const ProductItem = ({ product }) =>
       }}
       size={{ height: 1 }}
     />
-    <Text height={2} marginHorizontal={0.5}>
-      {product.brand.name}
+    <Text height={1} marginHorizontal={0.5} marginTop={2} bold>
+      {product.brand.name.toUpperCase()}
     </Text>
     <Text height={2} marginHorizontal={0.5}>
       {product.name}

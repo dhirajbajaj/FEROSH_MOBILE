@@ -56,7 +56,7 @@ platform :ios do
     # 5
     sigh(force: true)
     # match(type: "appstore") # more information: https://codesigning.guide
-    gym(scheme: "FEROSH") # Build your app - more options available
+    gym(scheme: "este") # Build your app - more options available
     pilot
 
     # sh "your_script.sh"
@@ -79,7 +79,7 @@ platform :ios do
       cert
       # 5
       sigh(force: true)
-      gym(scheme: "FEROSH") # Build your app - more options available
+      gym(scheme: "este") # Build your app - more options available
       deliver(force: true)
       # frameit
     end

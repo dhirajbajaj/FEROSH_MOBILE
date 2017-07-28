@@ -2,10 +2,12 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import NewList from './NewList';
+import { connect } from 'react-redux';
 
 const PRODUCTS_QUERY = gql`
-  query NEW_LIST_QUERY($offset: Int, $limit: Int) {
-    products(offset: $offset, limit: $limit) @connection(key: "products", filter: ["filter"]) {
+  query NEW_LIST_QUERY($offset: Int, $limit: Int, $filter: ProductFilter) {
+    products(offset: $offset, limit: $limit, filter: $filter)
+      @connection(key: "products", filter: ["filter"]) {
       total
       offset
       size
@@ -54,14 +56,18 @@ const NewListWithData = ({ data }) => <NewList data={data} onLoadMore={() => fet
 
 const ITEMS_PER_PAGE = 10;
 const withData = graphql(PRODUCTS_QUERY, {
-  options: {
-    variables: {
-      // filter: (props.params && props.params.filter && props.params.filter.toUpperCase()) || null,
-      offset: 0,
-      limit: ITEMS_PER_PAGE,
-    },
-    notifyOnNetworkStatusChange: true,
+  options({ newFilter }) {
+    return {
+      variables: {
+        filter: newFilter,
+        offset: 0,
+        limit: ITEMS_PER_PAGE,
+      },
+      notifyOnNetworkStatusChange: true,
+    };
   },
 });
 
-export default withData(NewListWithData);
+export default connect(state => ({
+  newFilter: state.newFilter,
+}))(withData(NewListWithData));

@@ -11,7 +11,7 @@ import CategoriesWithData from './FilterHeader';
 const screenSize = Dimensions.get('window');
 const ProductItem = ({ product }) =>
   <Box
-    // backgroundColor="primary"
+    backgroundColor="white"
     flexDirection="column"
     marginTop={0.5}
     // marginHorizontal={0.5}
@@ -22,7 +22,6 @@ const ProductItem = ({ product }) =>
   >
     <Image
       height={10}
-      backgroundColor="warning"
       source={{
         uri: product.media && product.media[0] ? product.media[0].link : '',
       }}
@@ -90,7 +89,8 @@ const NewList = ({ data, onLoadMore }: NewListProps) => {
       horizontal={false}
       numColumns={2}
       ListHeaderComponent={<CategoriesWithData />}
-      // columnWrapperStyle={{ marginHorizontal:10 }}
+      ItemSeparatorComponent={() => <Box height={2} />}
+      backgroundColor="white"
     />
   );
 };

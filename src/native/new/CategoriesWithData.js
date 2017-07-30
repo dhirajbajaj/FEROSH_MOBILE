@@ -34,12 +34,24 @@ const withData = graphql(CATEGORIES_QUERY, {
   }),
 });
 
-const Categories = ({ categories, loading, setCategoryFilter, newFilter }: CategoriesProps) => {
+const Categories = ({
+  categories,
+  loading,
+  setCategoryFilter,
+  newFilter,
+  ...props
+}: CategoriesProps) => {
   if (loading) {
     return <Loading />;
   }
   return (
-    <Box height={2} borderBottomWidth={1} borderBottomColor="#9f9f9f">
+    <Box
+      height={2}
+      borderBottomWidth={1}
+      borderBottomColor="#9f9f9f"
+      {...props}
+      backgroundColor="white"
+    >
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {categories.map(category =>
           <Checkbox

@@ -5,8 +5,10 @@ import { Box, Text, Image } from '../../common/components';
 import { FormattedNumber } from 'react-intl';
 import { FlatList, Dimensions, ActivityIndicator } from 'react-native';
 import { isEmpty } from 'ramda';
+import { Subject } from 'rxjs/Subject';
 import { SearchBar } from 'react-native-elements';
-import CategoriesWithData from './FilterHeader';
+import CategoriesWithData from './CategoriesWithData';
+import * as Animatable from 'react-native-animatable';
 
 const screenSize = Dimensions.get('window');
 const ProductItem = ({ product }) =>
@@ -58,7 +60,7 @@ type NewListProps = {
   onLoadMore: Function,
 };
 
-const NewList = ({ data, onLoadMore }: NewListProps) => {
+const NewList = ({ data, onLoadMore, ...props }: NewListProps) => {
   if (data.networkStatus === 1) {
     return <ActivityIndicator />;
   }
@@ -81,22 +83,60 @@ const NewList = ({ data, onLoadMore }: NewListProps) => {
   //   values, // object values to array
   // )(products);
 
+  // headerAnimation must be declared here so the ref callback can refer to it
+  let headerAnimation = null;
+  const scrollDirection$ = new Subject();
+  scrollDirection$
+    .throttleTime(1000)
+    .map(event => event.nativeEvent.contentOffset.y)
+    .bufferCount(2, 1)
+    .map(buffer => (buffer[0] > buffer[1] ? 'UP' : 'DOWN'))
+    .distinctUntilChanged()
+    .subscribe(x => {
+      if (x === 'UP') {
+        headerAnimation
+          .slideInDown(800)
+          .then(endState =>
+            console.log(endState.finished ? 'slideInDown finished' : 'slideInDown cancelled'),
+          );
+      } else if (x === 'DOWN') {
+        headerAnimation
+          .slideOutUp(800)
+          .then(endState =>
+            console.log(endState.finished ? 'slideOutUp finished' : 'slideOutUp cancelled'),
+          );
+      }
+    });
+
   return (
-    <FlatList
-      data={data.products.products}
-      refreshing={data.networkStatus === 4}
-      onRefresh={() => data.refetch()}
-      onEndReachedThreshold={0.5}
-      onEndReached={onLoadMore}
-      renderItem={product => <ProductItem product={product.item} />}
-      keyExtractor={product => product.id}
-      horizontal={false}
-      numColumns={2}
-      ListHeaderComponent={<CategoriesWithData />}
-      ListFooterComponent={<Box height={4} />}
-      ItemSeparatorComponent={() => <Box height={4} />}
-      backgroundColor="white"
-    />
+    <Box>
+      <FlatList
+        data={data.products.products}
+        refreshing={data.networkStatus === 4}
+        onRefresh={() => data.refetch()}
+        onEndReachedThreshold={0.5}
+        onEndReached={onLoadMore}
+        renderItem={product => <ProductItem product={product.item} />}
+        keyExtractor={product => product.id}
+        horizontal={false}
+        numColumns={2}
+        ListFooterComponent={<Box height={4} />}
+        ItemSeparatorComponent={() => <Box height={4} />}
+        backgroundColor="white"
+        onScroll={event => {
+          scrollDirection$.next(event);
+        }}
+      />
+
+      <Animatable.View
+        style={{ position: 'absolute' }}
+        ref={input => {
+          headerAnimation = input;
+        }}
+      >
+        <CategoriesWithData />
+      </Animatable.View>
+    </Box>
   );
 };
 

@@ -8,20 +8,21 @@ const routeConfiguration = {
   New: {
     screen: New,
     navigationOptions: {
-      title: 'New',
+      title: 'HÀNG MỚI',
     },
   },
-  Details: {
+  FilterScreen: {
     screen: FilterScreen,
-    navigationOptions: ({ navigation }) => ({
-      title: `${navigation.state.params.name.first.toUpperCase()} ${navigation.state.params.name.last.toUpperCase()}`,
-    }),
+    navigationOptions: {
+      title: 'TÌM KIẾM',
+    },
   },
 };
 
 // going to disable the header for now
 const stackNavigatorConfiguration = {
   initialRouteName: 'New',
+  mode: 'modal',
 };
 
 const NavigatorTabNew = StackNavigator(routeConfiguration, stackNavigatorConfiguration);

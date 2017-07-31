@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 // import productsMessages from '../../common/new/productsMessages';
-import { Box, Text, Image } from '../../common/components';
+import { Box, Text, Image, Loading } from '../../common/components';
 import { FormattedNumber } from 'react-intl';
 import { FlatList, Dimensions, ActivityIndicator } from 'react-native';
 import { isEmpty } from 'ramda';
@@ -94,22 +94,14 @@ const NewList = ({ data, onLoadMore, ...props }: NewListProps) => {
     .distinctUntilChanged()
     .subscribe(x => {
       if (x === 'UP') {
-        headerAnimation
-          .slideInDown(800)
-          .then(endState =>
-            console.log(endState.finished ? 'slideInDown finished' : 'slideInDown cancelled'),
-          );
+        headerAnimation.transitionTo({ translateY: 0 }, 800);
       } else if (x === 'DOWN') {
-        headerAnimation
-          .slideOutUp(800)
-          .then(endState =>
-            console.log(endState.finished ? 'slideOutUp finished' : 'slideOutUp cancelled'),
-          );
+        headerAnimation.transitionTo({ translateY: -49 }, 800);
       }
     });
 
   return (
-    <Box>
+    <Box backgroundColor="white">
       <FlatList
         data={data.products.products}
         refreshing={data.networkStatus === 4}
@@ -120,7 +112,9 @@ const NewList = ({ data, onLoadMore, ...props }: NewListProps) => {
         keyExtractor={product => product.id}
         horizontal={false}
         numColumns={2}
-        ListFooterComponent={<Box height={4} />}
+        ListFooterComponent={<Loading height={4} />}
+        ListHeaderComponent={<Box height={2} />}
+        marginTop={48}
         ItemSeparatorComponent={() => <Box height={4} />}
         backgroundColor="white"
         onScroll={event => {

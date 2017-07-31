@@ -11,6 +11,7 @@ import { combineReducers } from 'redux';
 import { fieldsReducer as fields } from './lib/redux-fields';
 import client from './apolloClient';
 import newFilter from './new/reducer';
+import data from './data/reducer';
 
 // stackoverflow.com/q/35622588/233902
 const resetStateOnSignOutReducer = (reducer, initialState) => (state: State, action: Action) => {
@@ -45,6 +46,7 @@ const configureReducer = (initialState: Object) =>
       users,
       apollo,
       newFilter,
+      data,
     }),
     initialState,
   );

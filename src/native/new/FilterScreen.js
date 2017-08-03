@@ -1,17 +1,20 @@
 // @flow
 import type { State, Todo } from '../../common/types';
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { FlatList } from 'react-native';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
-import { values } from 'ramda';
-import { Box, Button, Loading, Image, TextInput } from '../../common/components';
+import { stringBoDau } from '../../common/lib/string';
+import { Subject } from 'rxjs/Subject';
+import { Box, Text, Loading, TextInput } from '../../common/components';
 import { withApollo } from 'react-apollo';
 import Checkbox from './Checkbox';
+import FilterTableView from './FilterTableView';
 import gql from 'graphql-tag';
 import { setCategoryFilter } from '../../common/new/actions';
-import { setBrands } from '../../common/data/actions';
+import { setBrands, setFilterTableData } from '../../common/data/actions';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { compose, isEmpty, prop, reverse, sortBy, filter, where, contains, last } from 'ramda';
 
 type FilterScreenProps = {
   categories: Array<Object>,
@@ -37,7 +40,7 @@ const FilterScreen = ({
   client,
   brands,
   setBrands,
-  ...props
+  setFilterTableData,
 }: FilterScreenProps) => {
   const runQuery = () => {
     client
@@ -47,6 +50,7 @@ const FilterScreen = ({
       .then(data => {
         const { data: { brands: { brands } = [] } } = data;
         setBrands(brands);
+        setFilterTableData(categories.concat(brands));
       })
       .catch(err => {
         console.log('catch', err);
@@ -57,6 +61,7 @@ const FilterScreen = ({
     console.log('request brands');
     runQuery();
   }
+
   if (loading) {
     return <Loading />;
   }
@@ -64,13 +69,46 @@ const FilterScreen = ({
   const onSubmitEditing = event => {
     console.log('onSubmitEditing', event, event.nativeEvent.text);
   };
-  const onChangeText = text => {
-    console.log('onChangeText', text);
-  };
+
+  const onChangeText$ = new Subject();
+  onChangeText$.subscribe(searchstring => {
+    const str = stringBoDau(searchstring.trim());
+    if (str === '') {
+      setFilterTableData(categories.concat(brands));
+      return;
+    }
+    const searchInArray = filter(
+      where({
+        nameBoDau: text => {
+          const result = text.search(new RegExp(str, 'i'));
+          return result >= 0;
+        },
+      }),
+    );
+
+    const searchedCategories = searchInArray(categories);
+    const goCategories = searchedCategories.reduce((prev, item, index, array) => {
+      const lastItem = last(prev);
+      if (
+        (!lastItem && item.parentId !== '0') ||
+        (lastItem &&
+          item.parentId !== '0' &&
+          item.parentId !== lastItem.parentId &&
+          item.parentId !== lastItem.id)
+      ) {
+        prev.push(last(filter(itemFilter => itemFilter.id === item.parentId, categories)));
+      }
+      prev.push(item);
+      return prev;
+    }, []);
+
+    setFilterTableData(goCategories.concat(searchInArray(brands)));
+  });
+
   return (
-    <Box height={4} {...props} backgroundColor="white" flexDirection="column">
+    <Box backgroundColor="white" flexDirection="column">
       <Box
-        marginTop={0.25}
+        marginVertical={0.25}
         marginHorizontal={0.25}
         height={2}
         flexDirection="row"
@@ -88,35 +126,13 @@ const FilterScreen = ({
           placeholder="..."
           returnKeyType="search"
           onSubmitEditing={onSubmitEditing}
-          onChangeText={onChangeText}
+          onChangeText={text => {
+            onChangeText$.next(text);
+          }}
           blurOnSubmit
         />
       </Box>
-      <Box>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {categories.map(category =>
-            <Checkbox
-              marginHorizontal={0.5}
-              marginVertical={0.5}
-              key={category.id}
-              onPress={() => setCategoryFilter(category.id)}
-              title={category.name.toUpperCase()}
-              checked={!!(newFilter.categories && newFilter.categories.indexOf(category.id) !== -1)}
-            />,
-          )}
-        </ScrollView>
-      </Box>
-
-      <Box
-        height={2}
-        borderTopWidth={1}
-        borderTopColor="#9f9f9f"
-        borderBottomWidth={1}
-        borderBottomColor="#9f9f9f"
-        alignItems="flex-end"
-      >
-        <Button width={4}>Chon</Button>
-      </Box>
+      <FilterTableView />
     </Box>
   );
 };
@@ -127,5 +143,5 @@ export default connect(
     categories: state.data.categories,
     brands: state.data.brands,
   }),
-  { setBrands, setCategoryFilter },
+  { setBrands, setCategoryFilter, setFilterTableData },
 )(withApollo(FilterScreen));

@@ -30,8 +30,18 @@ const reducer = (state = initValue, action) => {
       }));
       return { ...state, brands };
     }
+
+    case 'SET_DESIGNERS': {
+      const designers = action.payload.map(item => ({
+        ...item,
+        nameBoDau: stringBoDau(item.name),
+      }));
+      return { ...state, designers };
+    }
+
     case 'SET_FILTER_TABLE_DATA':
       return { ...state, filterTableData: action.payload };
+
     default:
       return state;
   }

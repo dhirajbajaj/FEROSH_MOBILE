@@ -12,7 +12,7 @@ import Checkbox from './Checkbox';
 import FilterTableView from './FilterTableView';
 import gql from 'graphql-tag';
 import { setCategoryFilter } from '../../common/new/actions';
-import { setBrands, setFilterTableData } from '../../common/data/actions';
+import { setBrands, setFilterTableData, setDesigners } from '../../common/data/actions';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { compose, isEmpty, prop, reverse, sortBy, filter, where, contains, last } from 'ramda';
 
@@ -32,6 +32,17 @@ const BRAND_QUERY = gql`
   }
 `;
 
+const DESIGNERS_QUERY = gql`
+  query DESIGNERS_QUERY {
+    designers {
+      users {
+        id
+        name
+      }
+    }
+  }
+`;
+
 const FilterScreen = ({
   categories,
   setCategoryFilter,
@@ -39,7 +50,9 @@ const FilterScreen = ({
   newFilter,
   client,
   brands,
+  designers,
   setBrands,
+  setDesigners,
   setFilterTableData,
 }: FilterScreenProps) => {
   const runQuery = () => {
@@ -50,7 +63,21 @@ const FilterScreen = ({
       .then(data => {
         const { data: { brands: { brands } = [] } } = data;
         setBrands(brands);
-        setFilterTableData(categories.concat(brands));
+      })
+      .catch(err => {
+        console.log('catch', err);
+      });
+  };
+
+  const runDesignersQuery = () => {
+    client
+      .query({
+        query: DESIGNERS_QUERY,
+      })
+      .then(data => {
+        const { data: { designers: { users } = [] } } = data;
+        setDesigners(users);
+        setFilterTableData(categories.concat(users));
       })
       .catch(err => {
         console.log('catch', err);
@@ -62,6 +89,11 @@ const FilterScreen = ({
     runQuery();
   }
 
+  if (!designers || designers.length === 0) {
+    console.log('request designers');
+    runDesignersQuery();
+  }
+
   if (loading) {
     return <Loading />;
   }
@@ -71,16 +103,17 @@ const FilterScreen = ({
   };
 
   const onChangeText$ = new Subject();
-  onChangeText$.subscribe(searchstring => {
+  onChangeText$.debounceTime(500).subscribe(searchstring => {
+    console.log('searchstring ===', searchstring);
     const str = stringBoDau(searchstring.trim());
     if (str === '') {
-      setFilterTableData(categories.concat(brands));
+      setFilterTableData(categories.concat(designers));
       return;
     }
     const searchInArray = filter(
       where({
         nameBoDau: text => {
-          const result = text.search(new RegExp(str, 'i'));
+          const result = text.search(new RegExp(`(\\b${str})`));
           return result >= 0;
         },
       }),
@@ -102,7 +135,7 @@ const FilterScreen = ({
       return prev;
     }, []);
 
-    setFilterTableData(goCategories.concat(searchInArray(brands)));
+    setFilterTableData(goCategories.concat(searchInArray(designers)));
   });
 
   return (
@@ -123,7 +156,7 @@ const FilterScreen = ({
           autoCapitalize="none"
           autoCorrect={false}
           disabled={false}
-          placeholder="..."
+          // placeholder="..."
           returnKeyType="search"
           onSubmitEditing={onSubmitEditing}
           onChangeText={text => {
@@ -142,6 +175,7 @@ export default connect(
     newFilter: state.newFilter,
     categories: state.data.categories,
     brands: state.data.brands,
+    designers: state.data.designers,
   }),
-  { setBrands, setCategoryFilter, setFilterTableData },
+  { setBrands, setDesigners, setCategoryFilter, setFilterTableData },
 )(withApollo(FilterScreen));

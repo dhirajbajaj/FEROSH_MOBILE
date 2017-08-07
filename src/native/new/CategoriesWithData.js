@@ -5,7 +5,7 @@ import { ScrollView } from 'react-native';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import { connect } from 'react-redux';
 import { values } from 'ramda';
-import { Box, Button, Loading } from '../../common/components';
+import { Box, Button, Loading, Text } from '../../common/components';
 import { withApollo } from 'react-apollo';
 import Checkbox from './Checkbox';
 import gql from 'graphql-tag';
@@ -60,12 +60,12 @@ const Categories = ({
     return <Loading />;
   }
   return (
-    <Box height={4} {...props} backgroundColor="white" flexDirection="column">
+    <Box height={3} {...props} backgroundColor="white" flexDirection="column">
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {categories.map(category =>
           <Checkbox
-            marginHorizontal={0.5}
-            marginVertical={0.5}
+            marginHorizontal={0.25}
+            marginVertical={0.25}
             key={category.id}
             onPress={() => setCategoryFilter(category.id)}
             title={category.name.toUpperCase()}
@@ -74,14 +74,16 @@ const Categories = ({
         )}
       </ScrollView>
       <Box
-        height={2}
+        height={1.5}
         borderTopWidth={1}
         borderTopColor="#9f9f9f"
         borderBottomWidth={1}
         borderBottomColor="#9f9f9f"
         alignItems="flex-end"
       >
-        <Button width={4}>Chon</Button>
+        <Text size={-1} marginVertical={0.25} marginHorizontal={0.5}>
+          Lọc Theo
+        </Text>
       </Box>
     </Box>
   );

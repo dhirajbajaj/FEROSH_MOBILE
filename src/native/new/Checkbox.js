@@ -16,7 +16,7 @@ const colors = {
 
 const Checkbox = ({ checked, onPress, title, ...props }: CheckboxProps) =>
   <TouchableWithoutFeedback onPress={onPress}>
-    <Text color={checked ? colors.checked : colors.unchecked} {...props}>
+    <Text size={-1} color={checked ? colors.checked : colors.unchecked} {...props}>
       {title}
     </Text>
   </TouchableWithoutFeedback>;

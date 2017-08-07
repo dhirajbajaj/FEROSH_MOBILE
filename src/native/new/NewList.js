@@ -16,29 +16,29 @@ const ProductItem = ({ product }) =>
     backgroundColor="white"
     flexDirection="column"
     marginTop={0.5}
-    // marginHorizontal={0.5}
-    height={15}
+    height={10}
     style={() => ({
       width: screenSize.width / 2,
     })}
   >
     <Image
-      height={10}
+      height={9}
       source={{
         uri: product.media && product.media[0] ? product.media[0].link : '',
       }}
+      resizeMode="contain"
       size={{ height: 1 }}
     />
-    <Text height={1} marginHorizontal={0.5} marginTop={2} bold>
+    <Text size={-1} height={0.75} marginHorizontal={1} marginVertical={0.25} marginTop={0.5} bold>
       {product.brand.name.toUpperCase()}
     </Text>
-    <Text height={2} marginHorizontal={0.5}>
+    <Text size={-2} lineHeight={12} marginHorizontal={1}>
       {product.name}
     </Text>
 
     <FormattedNumber value={product.price} style="currency" currency="VND">
       {message =>
-        <Text height={2} marginHorizontal={0.5}>
+        <Text size={-2} lineHeight={12} marginHorizontal={1}>
           {message}
         </Text>}
     </FormattedNumber>

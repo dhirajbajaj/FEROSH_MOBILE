@@ -98,6 +98,7 @@
     "react-helmet": "^4.0.0",
     "react-intl": "^2.1.2",
     "react-native": "0.46.4",
+    "react-native-animatable": "^1.2.3",
     "react-native-elements": "^0.15.0",
     "react-native-fbsdk": "0.6.0",
     "react-native-i18n": "^1.0.0",
@@ -130,7 +131,5 @@
     "webpack-isomorphic-tools": "^2.6.5",
     "yargs": "^6.0.0"
   },
-  "devDependencies": {
-    "remote-redux-devtools": "^0.5.12"
-  }
+  "devDependencies": {}
 }

@@ -4,7 +4,6 @@ import configureReducer from './configureReducer';
 import configureStorage from './configureStorage';
 import { applyMiddleware, createStore, compose } from 'redux';
 import { persistStore, autoRehydrate } from 'redux-persist';
-import { composeWithDevTools } from 'remote-redux-devtools';
 
 type Options = {
   initialState: Object,
@@ -19,10 +18,11 @@ const configureStore = (options: Options) => {
 
   const middleware = configureMiddleware(initialState, platformDeps, platformMiddleware);
 
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
   const store = createStore(
     reducer,
     initialState,
-    composeWithDevTools(applyMiddleware(...middleware), autoRehydrate()),
+    composeEnhancers(compose(applyMiddleware(...middleware), autoRehydrate())),
   );
 
   if (platformDeps.storageEngine) {
